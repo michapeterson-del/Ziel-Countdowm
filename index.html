@@ -169,11 +169,11 @@
     gap:1.1rem;
   }
 
-  .board-header{margin-bottom:.2rem;}
+  .board-header{margin-bottom:.2rem; text-align:center;}
   .board-header-row{
-    display:flex; align-items:flex-start; justify-content:space-between; gap:1.2rem; flex-wrap:wrap;
+    display:flex; flex-direction:column; align-items:center; gap:.7rem;
   }
-  .board-logo{height:32px; width:auto; flex:none; margin-top:.1rem;}
+  .board-logo{height:64px; width:auto;}
   .board-eyebrow{
     text-transform:uppercase; letter-spacing:.14em; font-size:.75rem;
     font-weight:700; color:var(--accent-dark); margin:0 0 .3rem;
@@ -184,9 +184,9 @@
     color:var(--ink); margin:0 0 .6rem;
     text-wrap:balance;
   }
-  .title-rule{display:block; width:52px; height:5px; border-radius:3px; background:var(--accent);}
+  .title-rule{display:block; width:52px; height:5px; border-radius:3px; background:var(--accent); margin:0 auto;}
 
-  .setup-logo{height:30px; width:auto; margin-bottom:1.1rem;}
+  .setup-logo{height:56px; width:auto; display:block; margin:0 auto 1.3rem;}
 
   .hero-card{padding:2rem 1.8rem; text-align:center;}
   .hero-kicker{
@@ -423,12 +423,12 @@
   <div class="board">
     <div class="board-header">
       <div class="board-header-row">
+        <img class="board-logo" src="assets/tepto-logo.png" alt="tepto">
         <div>
           <p id="board-eyebrow" class="board-eyebrow" hidden></p>
           <h1 id="board-title" class="board-title">Monats-Countdown</h1>
           <span class="title-rule"></span>
         </div>
-        <img class="board-logo" src="assets/tepto-logo.png" alt="tepto">
       </div>
     </div>
 
