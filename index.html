@@ -459,9 +459,8 @@
 (function(){
   "use strict";
 
-  var KV_BASE = "https://kvdb.io";
-  var STATE_KEY = "state";
-  var POLL_MS = 6000;
+  var FIREBASE_DB = "https://test-3cf18-default-rtdb.firebaseio.com";
+  var POLL_MS = 5000;
 
   var params = new URLSearchParams(location.search);
   var boardId = params.get("g");
@@ -517,28 +516,22 @@
     el.hidden = false; el.textContent = msg;
   }
 
-  // ---------------- KV storage (kvdb.io) ----------------
-  function kvCreateBucket(){
-    return fetch(KV_BASE + "/", { method: "POST" })
-      .then(function(res){
-        if(!res.ok) throw new Error("create-failed");
-        return res.text();
-      })
-      .then(function(id){ return id.trim(); });
+  // ---------------- Storage (Firebase Realtime Database, REST) ----------------
+  function genId(){
+    return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
   }
-  function kvGet(bucket, key){
-    return fetch(KV_BASE + "/" + bucket + "/" + key + "?_=" + Date.now(), { cache: "no-store" })
+  function fbGet(boardId){
+    return fetch(FIREBASE_DB + "/boards/" + boardId + ".json?_=" + Date.now(), { cache: "no-store" })
       .then(function(res){
-        if(res.status === 404) return null;
         if(!res.ok) throw new Error("get-failed");
-        return res.text();
+        return res.json();
       });
   }
-  function kvSet(bucket, key, value){
-    return fetch(KV_BASE + "/" + bucket + "/" + key, {
+  function fbSet(boardId, state){
+    return fetch(FIREBASE_DB + "/boards/" + boardId + ".json", {
       method: "PUT",
-      headers: { "Content-Type": "text/plain" },
-      body: value
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(state)
     }).then(function(res){
       if(!res.ok) throw new Error("set-failed");
     });
@@ -568,11 +561,11 @@
         updatedAt: Date.now()
       };
 
-      kvCreateBucket()
-        .then(function(bucket){ return kvSet(bucket, STATE_KEY, JSON.stringify(state)).then(function(){ return bucket; }); })
-        .then(function(bucket){
+      var newId = genId();
+      fbSet(newId, state)
+        .then(function(){
           var url = new URL(location.href);
-          url.search = "?g=" + encodeURIComponent(bucket);
+          url.search = "?g=" + encodeURIComponent(newId);
           location.href = url.toString();
         })
         .catch(function(){
@@ -671,13 +664,12 @@
   setInterval(tickUpdatedText, 1000);
 
   function fetchState(silent){
-    return kvGet(boardId, STATE_KEY)
-      .then(function(raw){
-        if(raw === null){
+    return fbGet(boardId)
+      .then(function(state){
+        if(state === null){
           showBanner(els.boardError, "Dieses Board wurde nicht gefunden. Prüfe den Link oder erstelle ein neues Board.");
           return;
         }
-        var state = JSON.parse(raw);
         currentState = state;
         showBanner(els.boardError, null);
         render(state);
@@ -739,7 +731,7 @@
     };
     els.sheetSave.disabled = true;
     els.sheetSave.textContent = "Speichert…";
-    kvSet(boardId, STATE_KEY, JSON.stringify(state))
+    fbSet(boardId, state)
       .then(function(){
         currentState = state;
         render(state);

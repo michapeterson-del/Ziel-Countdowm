@@ -10,7 +10,7 @@ Eine Seite für ein Vertriebsziel: Zahl eintragen, Link verschicken, das Team si
 4. Diesen Link ans Vertriebsteam schicken.
 5. Über das Zahnrad unten rechts kann der Stand jederzeit aktualisiert werden. Alle, die den Link offen haben, sehen die neue Zahl automatisch innerhalb weniger Sekunden (kein neuer Link nötig).
 
-Der Stand wird über [kvdb.io](https://kvdb.io) gespeichert (kostenloser, anonymer Key-Value-Speicher, kein Login nötig). Die Board-ID im Link ist der einzige Schlüssel dazu – Link also nur an die gewünschten Personen schicken.
+Der Stand wird in einer Firebase Realtime Database gespeichert (Projekt `test-3cf18`, Regeln aktuell öffentlich lesbar/schreibbar). Die Board-ID im Link ist der einzige Schlüssel dazu – Link also nur an die gewünschten Personen schicken.
 
 ## GitHub Pages aktivieren (einmalig)
 
