@@ -170,6 +170,10 @@
   }
 
   .board-header{margin-bottom:.2rem;}
+  .board-header-row{
+    display:flex; align-items:flex-start; justify-content:space-between; gap:1.2rem; flex-wrap:wrap;
+  }
+  .board-logo{height:32px; width:auto; flex:none; margin-top:.1rem;}
   .board-eyebrow{
     text-transform:uppercase; letter-spacing:.14em; font-size:.75rem;
     font-weight:700; color:var(--accent-dark); margin:0 0 .3rem;
@@ -181,6 +185,8 @@
     text-wrap:balance;
   }
   .title-rule{display:block; width:52px; height:5px; border-radius:3px; background:var(--accent);}
+
+  .setup-logo{height:30px; width:auto; margin-bottom:1.1rem;}
 
   .hero-card{padding:2rem 1.8rem; text-align:center;}
   .hero-kicker{
@@ -368,6 +374,7 @@
 <!-- ============ SETUP VIEW ============ -->
 <main id="setup" class="screen" hidden>
   <div class="setup-card card">
+    <img class="setup-logo" src="assets/tepto-logo.png" alt="tepto">
     <p class="setup-eyebrow">Neues Board</p>
     <h1>Ziel-Countdown aufsetzen</h1>
     <p class="lead">Einmal einrichten, einen Link verschicken. Trägst du später einen neuen Stand ein, sehen ihn alle mit dem Link live &mdash; ohne dass du erneut etwas verschickst.</p>
@@ -415,9 +422,14 @@
 <main id="board-view" class="screen" hidden>
   <div class="board">
     <div class="board-header">
-      <p id="board-eyebrow" class="board-eyebrow" hidden></p>
-      <h1 id="board-title" class="board-title">Monats-Countdown</h1>
-      <span class="title-rule"></span>
+      <div class="board-header-row">
+        <div>
+          <p id="board-eyebrow" class="board-eyebrow" hidden></p>
+          <h1 id="board-title" class="board-title">Monats-Countdown</h1>
+          <span class="title-rule"></span>
+        </div>
+        <img class="board-logo" src="assets/tepto-logo.png" alt="tepto">
+      </div>
     </div>
 
     <div id="board-error" class="banner banner-error" hidden></div>
