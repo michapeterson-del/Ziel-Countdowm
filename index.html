@@ -3,53 +3,50 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Vertriebsziel</title>
-<meta name="description" content="Live-Board für das Vertriebsziel – ein Link, sofort für alle sichtbar.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>">
+<title>Ziel-Countdown</title>
+<meta name="description" content="Live-Board für ein Vertriebsziel – ein Link, sofort für alle sichtbar.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎯</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0A0E1A;
-    --bg-panel:#121729;
-    --bg-panel-2:#1A2036;
-    --line:#262C44;
-    --ink:#F5F7FC;
-    --ink-dim:#9199B5;
-    --ink-faint:#5A6280;
-    --accent:#FF5A3C;
-    --accent-soft:#FF8A5C;
-    --accent-2:#FFC24B;
-    --success:#34D399;
-    --success-soft:rgba(52,211,153,.16);
-    --danger:#FF6B6B;
-    --shadow:0 20px 60px rgba(0,0,0,.45);
+    --bg:#F1F6F3;
+    --card:#FFFFFF;
+    --card-border:#E7EFE9;
+    --ink:#12181A;
+    --ink-dim:#5B6A62;
+    --ink-faint:#93A39A;
+    --accent:#159A5B;
+    --accent-dark:#0D7F4B;
+    --accent-tint:#E3F6EA;
+    --accent-tint-2:#CFEEDB;
+    --gold:#D99A1C;
+    --gold-tint:#FBF0DA;
+    --danger:#D8474C;
+    --danger-tint:#FBEAEA;
+    --shadow:0 14px 34px rgba(15,40,26,.09);
+    --shadow-sm:0 4px 14px rgba(15,40,26,.07);
+    --radius:20px;
   }
 
   *{box-sizing:border-box;}
   html,body{height:100%;}
   body{
     margin:0;
-    background:
-      radial-gradient(120% 90% at 50% -10%, #1B2140 0%, var(--bg) 55%),
-      var(--bg);
+    background:var(--bg);
     color:var(--ink);
     font-family:'Inter',system-ui,sans-serif;
     min-height:100vh;
     overflow-x:hidden;
     -webkit-font-smoothing:antialiased;
   }
-  .display{font-family:'Bebas Neue',Inter,sans-serif; letter-spacing:.02em;}
-  .mono{font-family:'Space Mono',ui-monospace,monospace; font-variant-numeric:tabular-nums;}
-
-  a{color:var(--accent-soft);}
+  .display{font-family:'Poppins',Inter,sans-serif;}
+  a{color:var(--accent-dark);}
   button{font-family:inherit;}
-  input{font-family:inherit;}
-
+  input,select{font-family:inherit;}
   [hidden]{display:none !important;}
 
-  /* ---------- layout shells ---------- */
   .screen{
     min-height:100vh;
     display:flex;
@@ -58,13 +55,17 @@
     padding:6vh 5vw;
   }
 
+  .card{
+    background:var(--card);
+    border:1px solid var(--card-border);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow-sm);
+  }
+
   /* ---------- setup card ---------- */
   .setup-card{
     width:100%;
     max-width:480px;
-    background:linear-gradient(180deg,var(--bg-panel),var(--bg-panel-2));
-    border:1px solid var(--line);
-    border-radius:20px;
     padding:2.5rem 2.25rem;
     box-shadow:var(--shadow);
   }
@@ -73,20 +74,21 @@
     letter-spacing:.14em;
     font-size:.72rem;
     font-weight:700;
-    color:var(--accent-soft);
+    color:var(--accent-dark);
     margin:0 0 .6rem;
   }
   .setup-card h1{
-    font-family:'Bebas Neue',sans-serif;
-    font-size:2.6rem;
-    line-height:1.02;
-    letter-spacing:.01em;
+    font-family:'Poppins',sans-serif;
+    font-weight:800;
+    font-size:2rem;
+    line-height:1.15;
     margin:0 0 .5rem;
+    color:var(--ink);
   }
   .setup-card p.lead{
     color:var(--ink-dim);
     margin:0 0 2rem;
-    font-size:.98rem;
+    font-size:.96rem;
     line-height:1.5;
   }
   .field{margin-bottom:1.3rem;}
@@ -97,26 +99,30 @@
     color:var(--ink-dim);
     margin-bottom:.45rem;
   }
-  .field .hint{
-    font-size:.76rem;
-    color:var(--ink-faint);
-    margin-top:.4rem;
-  }
-  .field input{
+  .field .hint{font-size:.76rem; color:var(--ink-faint); margin-top:.4rem;}
+  .field input,.field select{
     width:100%;
-    background:var(--bg);
-    border:1px solid var(--line);
+    background:#FBFDFC;
+    border:1px solid var(--card-border);
     color:var(--ink);
     border-radius:10px;
     padding:.85rem .95rem;
-    font-size:1.05rem;
+    font-size:1.02rem;
     outline:none;
     transition:border-color .15s ease, box-shadow .15s ease;
+    appearance:none;
+  }
+  .field select{
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235B6A62' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat:no-repeat;
+    background-position:right .9rem center;
+    background-size:18px;
+    padding-right:2.5rem;
   }
   .field input::placeholder{color:var(--ink-faint);}
-  .field input:focus{
+  .field input:focus,.field select:focus{
     border-color:var(--accent);
-    box-shadow:0 0 0 3px rgba(255,90,60,.18);
+    box-shadow:0 0 0 3px rgba(21,154,91,.16);
   }
   .field .euro-input{position:relative;}
   .field .euro-input input{padding-right:2.6rem;}
@@ -127,12 +133,8 @@
   }
 
   .btn{
-    appearance:none;
-    border:none;
-    cursor:pointer;
-    border-radius:10px;
-    font-weight:700;
-    font-size:1rem;
+    appearance:none; border:none; cursor:pointer;
+    border-radius:10px; font-weight:700; font-size:1rem;
     padding:.9rem 1.3rem;
     display:inline-flex; align-items:center; justify-content:center; gap:.5rem;
     transition:transform .12s ease, box-shadow .12s ease, background .15s ease, opacity .15s ease;
@@ -140,230 +142,199 @@
   .btn:active{transform:translateY(1px);}
   .btn-primary{
     width:100%;
-    background:linear-gradient(135deg,var(--accent),var(--accent-2));
-    color:#1A0A03;
-    box-shadow:0 10px 30px rgba(255,90,60,.28);
+    background:linear-gradient(135deg,var(--accent),var(--accent-dark));
+    color:#FFFFFF;
+    box-shadow:0 10px 26px rgba(21,154,91,.3);
   }
-  .btn-primary:hover{box-shadow:0 14px 34px rgba(255,90,60,.38);}
+  .btn-primary:hover{box-shadow:0 14px 30px rgba(21,154,91,.4);}
   .btn-primary:disabled{opacity:.55; cursor:not-allowed; box-shadow:none;}
-  .btn-ghost{
-    background:transparent;
-    color:var(--ink-dim);
-    border:1px solid var(--line);
-  }
+  .btn-ghost{background:transparent; color:var(--ink-dim); border:1px solid var(--card-border);}
   .btn-ghost:hover{color:var(--ink); border-color:var(--ink-faint);}
   .btn-small{padding:.6rem .9rem; font-size:.85rem; border-radius:8px;}
 
   .banner{
-    border-radius:10px;
-    padding:.8rem 1rem;
-    font-size:.85rem;
-    margin-bottom:1.2rem;
-    line-height:1.45;
+    border-radius:10px; padding:.8rem 1rem; font-size:.85rem;
+    margin-bottom:1.2rem; line-height:1.45;
     display:flex; gap:.6rem; align-items:flex-start;
   }
-  .banner-error{background:rgba(255,107,107,.12); border:1px solid rgba(255,107,107,.35); color:#FFC9C9;}
-  .banner-info{background:var(--success-soft); border:1px solid rgba(52,211,153,.35); color:#B7F5DE;}
+  .banner-error{background:var(--danger-tint); border:1px solid rgba(216,71,76,.3); color:#9E2E32;}
 
   /* ---------- board ---------- */
   .board{
     width:100%;
-    max-width:900px;
-    text-align:center;
+    max-width:640px;
     display:flex;
     flex-direction:column;
-    align-items:center;
-    gap:1.6rem;
+    align-items:stretch;
+    gap:1.1rem;
   }
+
+  .board-header{margin-bottom:.2rem;}
   .board-eyebrow{
-    text-transform:uppercase;
-    letter-spacing:.22em;
-    font-size:.78rem;
-    font-weight:700;
-    color:var(--ink-dim);
+    text-transform:uppercase; letter-spacing:.14em; font-size:.75rem;
+    font-weight:700; color:var(--accent-dark); margin:0 0 .3rem;
   }
   .board-title{
-    font-family:'Bebas Neue',sans-serif;
-    font-size:clamp(1.6rem, 3.4vw, 2.6rem);
-    letter-spacing:.02em;
-    margin:0;
-    color:var(--ink);
+    font-family:'Poppins',sans-serif; font-weight:800;
+    font-size:clamp(1.5rem, 4vw, 2.1rem);
+    color:var(--ink); margin:0 0 .6rem;
+    text-wrap:balance;
   }
-  .amount-wrap{position:relative; width:100%;}
-  .amount{
-    font-family:'Bebas Neue',sans-serif;
-    font-size:clamp(3.4rem, 13vw, 9rem);
-    line-height:.95;
-    letter-spacing:.01em;
-    color:var(--ink);
-    text-shadow:0 0 60px rgba(255,90,60,.25);
+  .title-rule{display:block; width:52px; height:5px; border-radius:3px; background:var(--accent);}
+
+  .hero-card{padding:2rem 1.8rem; text-align:center;}
+  .hero-kicker{
+    font-family:'Poppins',sans-serif; font-weight:700; font-size:1.15rem;
+    color:var(--ink); margin:0 0 .3rem;
+  }
+  .hero-amount{
+    font-family:'Poppins',sans-serif; font-weight:800;
+    font-size:clamp(2.4rem, 9vw, 3.6rem);
+    line-height:1.05;
+    color:var(--accent);
     font-variant-numeric:tabular-nums;
+    text-wrap:balance;
   }
-  .amount .unit{font-size:.42em; color:var(--ink-dim); margin-left:.15em; vertical-align:.18em;}
-  .goal-line{
-    color:var(--ink-dim);
-    font-size:1rem;
-  }
-  .goal-line b{color:var(--ink); font-weight:700;}
-
-  .countdown-wrap{width:100%;}
-  .countdown-label{
-    text-transform:uppercase;
-    letter-spacing:.16em;
-    font-size:.72rem;
-    font-weight:700;
-    color:var(--ink-dim);
-    margin:0 0 .7rem;
-    transition:color .2s ease;
-  }
-  .countdown-wrap.expired .countdown-label{color:var(--danger);}
-  .countdown-grid{
-    display:flex; justify-content:center; gap:.7rem;
-  }
-  .countdown-cell{
-    background:var(--bg-panel);
-    border:1px solid var(--line);
-    border-radius:12px;
-    padding:.65rem .5rem;
-    min-width:4.4rem;
-    transition:border-color .2s ease;
-  }
-  .countdown-wrap.expired .countdown-cell{border-color:rgba(255,107,107,.4);}
-  .countdown-num{
-    font-family:'Space Mono',monospace;
-    font-weight:700;
-    font-size:clamp(1.3rem, 3.6vw, 1.8rem);
-    color:var(--ink);
-    font-variant-numeric:tabular-nums;
-    transition:color .2s ease;
-  }
-  .countdown-wrap.expired .countdown-num{color:var(--danger);}
-  .countdown-unit{
-    font-size:.62rem;
-    text-transform:uppercase;
-    letter-spacing:.1em;
-    color:var(--ink-faint);
-    margin-top:.15rem;
+  .hero-amount.goal-hit{color:var(--gold);}
+  .hero-suffix{
+    font-family:'Poppins',sans-serif; font-weight:700; font-size:1.05rem;
+    color:var(--ink); margin:.4rem 0 0;
   }
 
-  .progress-wrap{width:100%; max-width:680px;}
-  .progress-track{
-    position:relative;
-    height:22px;
-    background:var(--bg-panel);
-    border:1px solid var(--line);
-    border-radius:999px;
-    overflow:hidden;
+  .restzeit-card{
+    display:flex; align-items:center; justify-content:center;
+    gap:1.1rem; padding:1.1rem 1.3rem; flex-wrap:wrap;
   }
-  .progress-fill{
-    position:absolute; inset:0 auto 0 0;
-    width:0%;
-    border-radius:999px;
-    background:linear-gradient(90deg,var(--accent),var(--accent-2));
-    box-shadow:0 0 22px rgba(255,90,60,.55);
-    transition:width 1.1s cubic-bezier(.22,.9,.32,1), background .4s ease, box-shadow .4s ease;
+  .restzeit-item{
+    display:flex; align-items:center; gap:.55rem;
+    font-size:.95rem; color:var(--ink-dim);
   }
-  .progress-fill.goal-hit{
-    background:linear-gradient(90deg,var(--success),#7CF0C2);
-    box-shadow:0 0 26px rgba(52,211,153,.6);
-  }
-  .progress-fill::after{
-    content:'';
-    position:absolute; inset:0;
-    background:linear-gradient(90deg, transparent, rgba(255,255,255,.35), transparent);
-    width:40%;
-    animation:shimmer 2.4s ease-in-out infinite;
-  }
-  @keyframes shimmer{
-    0%{transform:translateX(-120%);}
-    100%{transform:translateX(340%);}
-  }
-  .progress-meta{
-    display:flex; justify-content:space-between;
-    margin-top:.55rem;
-    font-size:.8rem;
-    color:var(--ink-dim);
-  }
-  .progress-meta .pct{color:var(--accent-soft); font-weight:700;}
-  .progress-fill.goal-hit ~ .progress-meta .pct,
-  .pct.goal-hit{color:var(--success);}
+  .restzeit-item b{color:var(--ink); font-weight:700; font-variant-numeric:tabular-nums;}
+  .restzeit-item .ico{color:var(--accent); flex:none;}
+  .restzeit-divider{width:1px; height:26px; background:var(--card-border);}
+  .restzeit-card.expired .restzeit-item b{color:var(--danger);}
+  .restzeit-card.expired .restzeit-item .ico{color:var(--danger);}
 
-  .tagline{
-    font-size:clamp(1.05rem, 2.2vw, 1.35rem);
-    font-weight:700;
-    color:var(--ink);
-    min-height:1.6em;
+  .progress-card{
+    padding:1.6rem;
+    display:flex; align-items:center; gap:1.7rem; flex-wrap:wrap;
   }
-  .tagline.goal-hit{color:var(--success);}
+  .ring-wrap{position:relative; width:132px; height:132px; flex:none; margin:0 auto;}
+  .ring-svg{width:100%; height:100%; transform:rotate(-90deg);}
+  .ring-track{fill:none; stroke:var(--accent-tint); stroke-width:14;}
+  .ring-fill{
+    fill:none; stroke:var(--accent); stroke-width:14; stroke-linecap:round;
+    transition:stroke-dashoffset 1s cubic-bezier(.22,.9,.32,1), stroke .3s ease;
+  }
+  .ring-fill.goal-hit{stroke:var(--gold);}
+  .ring-center{
+    position:absolute; inset:0; display:flex; align-items:baseline; justify-content:center;
+    font-family:'Poppins',sans-serif; font-weight:800; color:var(--ink);
+  }
+  .ring-center span{font-size:1.65rem;}
+  .ring-center small{font-size:.95rem; margin-left:.1rem; color:var(--ink-dim); font-weight:700;}
 
-  .delta-line{color:var(--ink-dim); font-size:.95rem;}
-  .delta-line b{color:var(--ink);}
+  .progress-stats{flex:1 1 220px; min-width:200px;}
+  .progress-heading{
+    font-family:'Poppins',sans-serif; font-weight:700; font-size:1.05rem;
+    color:var(--ink); margin:0 0 .6rem;
+  }
+  .progress-heading span{color:var(--accent-dark);}
+  .bar-track{
+    height:10px; background:var(--accent-tint); border-radius:999px; overflow:hidden; margin-bottom:1rem;
+  }
+  .bar-fill{
+    height:100%; width:0%; border-radius:999px;
+    background:linear-gradient(90deg,var(--accent),var(--accent-dark));
+    transition:width 1s cubic-bezier(.22,.9,.32,1), background .3s ease;
+  }
+  .bar-fill.goal-hit{background:linear-gradient(90deg,var(--gold),#B97F14);}
+  .stat-row{
+    display:flex; align-items:center; gap:.55rem;
+    font-size:.92rem; color:var(--ink-dim);
+    padding:.45rem 0;
+    border-top:1px solid var(--card-border);
+  }
+  .stat-row:first-of-type{border-top:none;}
+  .stat-row .ico{color:var(--accent); flex:none;}
+  .stat-row b{color:var(--ink); font-weight:700; margin-left:auto; font-variant-numeric:tabular-nums;}
+
+  .tagline-banner{
+    display:flex; align-items:center; gap:.9rem;
+    padding:1.1rem 1.3rem;
+    background:linear-gradient(135deg,var(--accent),var(--accent-dark));
+    border:none; color:#fff;
+  }
+  .tagline-banner .ico{
+    flex:none; width:34px; height:34px; border-radius:50%;
+    background:rgba(255,255,255,.18);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .tagline-headline{font-family:'Poppins',sans-serif; font-weight:700; font-size:1.02rem; margin:0;}
+  .tagline-sub{font-size:.85rem; margin:.15rem 0 0; opacity:.92;}
+  .tagline-banner.goal-hit{background:linear-gradient(135deg,var(--gold),#B97F14);}
 
   .updated-line{
-    color:var(--ink-faint);
-    font-size:.75rem;
-    margin-top:.4rem;
+    color:var(--ink-faint); font-size:.75rem; text-align:center; margin-top:.1rem;
   }
   .live-dot{
     display:inline-block; width:7px; height:7px; border-radius:50%;
-    background:var(--success); margin-right:.4em;
-    box-shadow:0 0 0 0 rgba(52,211,153,.6);
+    background:var(--accent); margin-right:.4em;
+    box-shadow:0 0 0 0 rgba(21,154,91,.55);
     animation:pulse-dot 2s infinite;
   }
   @keyframes pulse-dot{
-    0%{box-shadow:0 0 0 0 rgba(52,211,153,.55);}
-    70%{box-shadow:0 0 0 7px rgba(52,211,153,0);}
-    100%{box-shadow:0 0 0 0 rgba(52,211,153,0);}
+    0%{box-shadow:0 0 0 0 rgba(21,154,91,.5);}
+    70%{box-shadow:0 0 0 7px rgba(21,154,91,0);}
+    100%{box-shadow:0 0 0 0 rgba(21,154,91,0);}
   }
 
   /* ---------- fab + edit sheet ---------- */
   .fab{
     position:fixed; right:1.25rem; bottom:1.25rem;
     width:52px; height:52px; border-radius:50%;
-    background:var(--bg-panel); border:1px solid var(--line);
+    background:#fff; border:1px solid var(--card-border);
     color:var(--ink-dim);
     display:flex; align-items:center; justify-content:center;
     cursor:pointer; box-shadow:var(--shadow);
     transition:color .15s ease, border-color .15s ease, transform .15s ease;
     z-index:40;
   }
-  .fab:hover{color:var(--ink); border-color:var(--ink-faint); transform:rotate(24deg);}
+  .fab:hover{color:var(--accent-dark); border-color:var(--accent); transform:rotate(24deg);}
   .fab svg{width:22px; height:22px;}
 
   .sheet-overlay{
-    position:fixed; inset:0; background:rgba(6,8,16,.6);
+    position:fixed; inset:0; background:rgba(15,25,20,.45);
     backdrop-filter:blur(2px);
     display:flex; align-items:flex-end; justify-content:center;
-    z-index:50;
+    z-index:50; overflow-y:auto;
   }
   .sheet{
     width:100%; max-width:520px;
-    background:linear-gradient(180deg,var(--bg-panel),var(--bg-panel-2));
-    border:1px solid var(--line);
+    background:#fff;
+    border:1px solid var(--card-border);
     border-bottom:none;
     border-radius:20px 20px 0 0;
     padding:1.6rem 1.6rem 2rem;
-    box-shadow:0 -20px 60px rgba(0,0,0,.5);
+    box-shadow:0 -20px 50px rgba(15,25,20,.2);
     animation:sheet-up .22s ease-out;
   }
   @keyframes sheet-up{from{transform:translateY(100%);} to{transform:translateY(0);}}
   .sheet h2{
-    font-family:'Bebas Neue',sans-serif;
-    font-size:1.5rem; letter-spacing:.02em; margin:0 0 1.1rem;
+    font-family:'Poppins',sans-serif; font-weight:800; color:var(--ink);
+    font-size:1.35rem; margin:0 0 1.1rem;
   }
   .sheet-actions{display:flex; gap:.7rem; margin-top:1.4rem;}
   .sheet-actions .btn{flex:1;}
-  .share-row{
-    display:flex; gap:.6rem; margin-top:.3rem; margin-bottom:1.4rem;
-  }
+  .share-row{display:flex; gap:.6rem; margin-top:.3rem; margin-bottom:1.4rem;}
   .share-row input{
-    flex:1; background:var(--bg); border:1px solid var(--line); color:var(--ink-dim);
-    border-radius:10px; padding:.65rem .8rem; font-size:.82rem;
+    flex:1; background:#FBFDFC; border:1px solid var(--card-border); color:var(--ink-dim);
+    border-radius:10px; padding:.65rem .8rem; font-size:.8rem;
   }
 
   .toast{
     position:fixed; left:50%; bottom:2rem; transform:translate(-50%,10px);
-    background:var(--bg-panel); border:1px solid var(--line); color:var(--ink);
+    background:var(--ink); color:#fff;
     padding:.7rem 1.1rem; border-radius:10px; font-size:.85rem;
     box-shadow:var(--shadow);
     opacity:0; pointer-events:none; transition:opacity .25s ease, transform .25s ease;
@@ -376,20 +347,16 @@
     pointer-events:none; z-index:30;
   }
 
-  .footer-note{
-    color:var(--ink-faint); font-size:.72rem; margin-top:1rem;
-  }
-
   @media (prefers-reduced-motion: reduce){
-    .progress-fill{transition:none;}
-    .progress-fill::after{animation:none;}
+    .ring-fill,.bar-fill{transition:none;}
     .live-dot{animation:none;}
     .sheet{animation:none;}
   }
 
   @media (max-width: 480px){
     .setup-card{padding:2rem 1.4rem;}
-    .board{gap:1.2rem;}
+    .progress-card{flex-direction:column;}
+    .progress-stats{width:100%;}
   }
 </style>
 </head>
@@ -399,18 +366,30 @@
 
 <!-- ============ SETUP VIEW ============ -->
 <main id="setup" class="screen" hidden>
-  <div class="setup-card">
+  <div class="setup-card card">
     <p class="setup-eyebrow">Neues Board</p>
-    <h1>Vertriebsziel aufsetzen</h1>
+    <h1>Ziel-Countdown aufsetzen</h1>
     <p class="lead">Einmal einrichten, einen Link verschicken. Trägst du später einen neuen Stand ein, sehen ihn alle mit dem Link live &mdash; ohne dass du erneut etwas verschickst.</p>
 
     <div id="setup-error" class="banner banner-error" hidden></div>
 
     <form id="setup-form">
       <div class="field">
-        <label for="f-title">Titel des Ziels</label>
-        <input id="f-title" type="text" placeholder="z. B. Jahresziel 2026" maxlength="60">
-        <p class="hint">Optional &mdash; erscheint über der Zahl.</p>
+        <label for="f-team">Team / Kampagne (optional)</label>
+        <input id="f-team" type="text" placeholder="z. B. Vertriebsteam Nord" maxlength="60">
+      </div>
+      <div class="field">
+        <label for="f-period">Zeitraum</label>
+        <select id="f-period">
+          <option value="month" selected>Monat</option>
+          <option value="week">Woche</option>
+          <option value="year">Jahr</option>
+          <option value="custom">Eigene Bezeichnung…</option>
+        </select>
+      </div>
+      <div class="field" id="f-period-label-field" hidden>
+        <label for="f-period-label">Eigene Bezeichnung</label>
+        <input id="f-period-label" type="text" maxlength="30" placeholder="z. B. Quartal, Sprint">
       </div>
       <div class="field">
         <label for="f-goal">Zielbetrag</label>
@@ -424,7 +403,7 @@
       <div class="field">
         <label for="f-deadline">Enddatum (optional)</label>
         <input id="f-deadline" type="datetime-local">
-        <p class="hint">Zeigt einen Live-Countdown bis zu diesem Zeitpunkt.</p>
+        <p class="hint">Zeigt eine Restzeit-Anzeige bis zu diesem Zeitpunkt.</p>
       </div>
       <button type="submit" id="setup-submit" class="btn btn-primary">Board erstellen &amp; Link holen</button>
     </form>
@@ -434,38 +413,63 @@
 <!-- ============ BOARD VIEW ============ -->
 <main id="board-view" class="screen" hidden>
   <div class="board">
-    <p class="board-eyebrow">Live-Stand</p>
-    <h1 id="board-title" class="board-title">Vertriebsziel</h1>
+    <div class="board-header">
+      <p id="board-eyebrow" class="board-eyebrow" hidden></p>
+      <h1 id="board-title" class="board-title">Monats-Countdown</h1>
+      <span class="title-rule"></span>
+    </div>
 
     <div id="board-error" class="banner banner-error" hidden></div>
 
-    <div id="countdown-wrap" class="countdown-wrap" hidden>
-      <p id="countdown-label" class="countdown-label">Noch bis zum Stichtag</p>
-      <div class="countdown-grid">
-        <div class="countdown-cell"><div id="cd-days" class="countdown-num mono">00</div><div class="countdown-unit">Tage</div></div>
-        <div class="countdown-cell"><div id="cd-hours" class="countdown-num mono">00</div><div class="countdown-unit">Std</div></div>
-        <div class="countdown-cell"><div id="cd-min" class="countdown-num mono">00</div><div class="countdown-unit">Min</div></div>
-        <div class="countdown-cell"><div id="cd-sec" class="countdown-num mono">00</div><div class="countdown-unit">Sek</div></div>
+    <section class="card hero-card">
+      <p id="hero-kicker" class="hero-kicker">Noch</p>
+      <div id="hero-amount" class="hero-amount">0 €</div>
+      <p id="hero-suffix" class="hero-suffix">bis zum Monatsziel</p>
+    </section>
+
+    <section id="restzeit-card" class="card restzeit-card" hidden>
+      <div class="restzeit-item">
+        <svg class="ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 15.5 14"></polyline></svg>
+        <span>Restzeit: <b id="restzeit-value">–</b></span>
       </div>
-    </div>
-
-    <div class="amount-wrap">
-      <div id="amount" class="amount mono">0<span class="unit">€</span></div>
-    </div>
-
-    <div class="goal-line">Ziel: <b id="goal-value">0 €</b></div>
-
-    <div class="progress-wrap">
-      <div class="progress-track">
-        <div id="progress-fill" class="progress-fill" style="width:0%"></div>
+      <span class="restzeit-divider"></span>
+      <div class="restzeit-item">
+        <svg class="ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2"></rect><line x1="16" y1="2.5" x2="16" y2="6.5"></line><line x1="8" y1="2.5" x2="8" y2="6.5"></line><line x1="3" y1="9.5" x2="21" y2="9.5"></line></svg>
+        <span id="restzeit-date">–</span>
       </div>
-      <div class="progress-meta">
-        <span id="pct-value" class="pct">0 %</span>
-        <span id="delta-value">noch 0 €</span>
-      </div>
-    </div>
+    </section>
 
-    <p id="tagline" class="tagline">Bereit zum Start.</p>
+    <section class="card progress-card">
+      <div class="ring-wrap">
+        <svg class="ring-svg" viewBox="0 0 160 160">
+          <circle class="ring-track" cx="80" cy="80" r="64"></circle>
+          <circle id="ring-fill" class="ring-fill" cx="80" cy="80" r="64"></circle>
+        </svg>
+        <div class="ring-center"><span id="ring-pct">0</span><small>%</small></div>
+      </div>
+      <div class="progress-stats">
+        <p class="progress-heading">Fortschritt <span id="progress-pct-text">0 %</span></p>
+        <div class="bar-track"><div id="bar-fill" class="bar-fill"></div></div>
+        <div class="stat-row">
+          <svg class="ico" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 6"></polyline><polyline points="15 6 21 6 21 12"></polyline></svg>
+          Erreicht <b id="stat-current">0 €</b>
+        </div>
+        <div class="stat-row">
+          <svg class="ico" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="4.5"></circle><circle cx="12" cy="12" r="0.6" fill="currentColor"></circle></svg>
+          Ziel <b id="stat-goal">0 €</b>
+        </div>
+      </div>
+    </section>
+
+    <section id="tagline-banner" class="card tagline-banner">
+      <span class="ico">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      </span>
+      <div>
+        <p id="tagline-headline" class="tagline-headline">Bereit zum Start.</p>
+        <p id="tagline-sub" class="tagline-sub">Der erste Euro zählt.</p>
+      </div>
+    </section>
 
     <p class="updated-line"><span class="live-dot"></span><span id="updated-text">wird geladen…</span></p>
   </div>
@@ -489,8 +493,21 @@
     <div id="edit-error" class="banner banner-error" hidden></div>
 
     <div class="field">
-      <label for="e-title">Titel</label>
-      <input id="e-title" type="text" maxlength="60">
+      <label for="e-team">Team / Kampagne</label>
+      <input id="e-team" type="text" maxlength="60">
+    </div>
+    <div class="field">
+      <label for="e-period">Zeitraum</label>
+      <select id="e-period">
+        <option value="month">Monat</option>
+        <option value="week">Woche</option>
+        <option value="year">Jahr</option>
+        <option value="custom">Eigene Bezeichnung…</option>
+      </select>
+    </div>
+    <div class="field" id="e-period-label-field" hidden>
+      <label for="e-period-label">Eigene Bezeichnung</label>
+      <input id="e-period-label" type="text" maxlength="30">
     </div>
     <div class="field">
       <label for="e-current">Aktueller Stand</label>
@@ -503,7 +520,7 @@
     <div class="field">
       <label for="e-deadline">Enddatum</label>
       <input id="e-deadline" type="datetime-local">
-      <p class="hint">Leer lassen, um den Zeit-Countdown auszublenden.</p>
+      <p class="hint">Leer lassen, um die Restzeit-Anzeige auszublenden.</p>
     </div>
 
     <div class="sheet-actions">
@@ -521,6 +538,21 @@
 
   var FIREBASE_DB = "https://test-3cf18-default-rtdb.firebaseio.com";
   var POLL_MS = 5000;
+  var RING_R = 64;
+  var RING_C = 2 * Math.PI * RING_R;
+
+  var PERIODS = {
+    week:  { header: "Wochen-Countdown", genitive: "Wochenziel" },
+    month: { header: "Monats-Countdown", genitive: "Monatsziel" },
+    year:  { header: "Jahres-Countdown", genitive: "Jahresziel" }
+  };
+  function periodInfo(state){
+    if(state.period === "custom"){
+      var label = (state.periodLabel || "Ziel").trim();
+      return { header: label + "-Countdown", genitive: label + "-Ziel" };
+    }
+    return PERIODS[state.period] || PERIODS.month;
+  }
 
   var params = new URLSearchParams(location.search);
   var boardId = params.get("g");
@@ -530,26 +562,38 @@
     setupForm: document.getElementById("setup-form"),
     setupSubmit: document.getElementById("setup-submit"),
     setupError: document.getElementById("setup-error"),
-    fTitle: document.getElementById("f-title"),
+    fTeam: document.getElementById("f-team"),
+    fPeriod: document.getElementById("f-period"),
+    fPeriodLabelField: document.getElementById("f-period-label-field"),
+    fPeriodLabel: document.getElementById("f-period-label"),
     fGoal: document.getElementById("f-goal"),
     fCurrent: document.getElementById("f-current"),
     fDeadline: document.getElementById("f-deadline"),
 
     boardView: document.getElementById("board-view"),
     boardError: document.getElementById("board-error"),
+    boardEyebrow: document.getElementById("board-eyebrow"),
     boardTitle: document.getElementById("board-title"),
-    countdownWrap: document.getElementById("countdown-wrap"),
-    countdownLabel: document.getElementById("countdown-label"),
-    cdDays: document.getElementById("cd-days"),
-    cdHours: document.getElementById("cd-hours"),
-    cdMin: document.getElementById("cd-min"),
-    cdSec: document.getElementById("cd-sec"),
-    amount: document.getElementById("amount"),
-    goalValue: document.getElementById("goal-value"),
-    progressFill: document.getElementById("progress-fill"),
-    pctValue: document.getElementById("pct-value"),
-    deltaValue: document.getElementById("delta-value"),
-    tagline: document.getElementById("tagline"),
+
+    heroKicker: document.getElementById("hero-kicker"),
+    heroAmount: document.getElementById("hero-amount"),
+    heroSuffix: document.getElementById("hero-suffix"),
+
+    restzeitCard: document.getElementById("restzeit-card"),
+    restzeitValue: document.getElementById("restzeit-value"),
+    restzeitDate: document.getElementById("restzeit-date"),
+
+    ringFill: document.getElementById("ring-fill"),
+    ringPct: document.getElementById("ring-pct"),
+    progressPctText: document.getElementById("progress-pct-text"),
+    barFill: document.getElementById("bar-fill"),
+    statCurrent: document.getElementById("stat-current"),
+    statGoal: document.getElementById("stat-goal"),
+
+    taglineBanner: document.getElementById("tagline-banner"),
+    taglineHeadline: document.getElementById("tagline-headline"),
+    taglineSub: document.getElementById("tagline-sub"),
+
     updatedText: document.getElementById("updated-text"),
 
     fab: document.getElementById("fab"),
@@ -557,7 +601,10 @@
     shareLink: document.getElementById("share-link"),
     copyLink: document.getElementById("copy-link"),
     editError: document.getElementById("edit-error"),
-    eTitle: document.getElementById("e-title"),
+    eTeam: document.getElementById("e-team"),
+    ePeriod: document.getElementById("e-period"),
+    ePeriodLabelField: document.getElementById("e-period-label-field"),
+    ePeriodLabel: document.getElementById("e-period-label"),
     eCurrent: document.getElementById("e-current"),
     eGoal: document.getElementById("e-goal"),
     eDeadline: document.getElementById("e-deadline"),
@@ -567,11 +614,39 @@
     toast: document.getElementById("toast")
   };
 
+  els.ringFill.setAttribute("stroke-dasharray", RING_C.toFixed(2));
+
+  // ---------------- formatting ----------------
   function fmtEuro(n){
     n = Math.round(Number(n) || 0);
     return n.toLocaleString("de-DE") + " €";
   }
-
+  function fmtSmartEuro(n){
+    n = Math.max(0, Number(n) || 0);
+    if(n >= 1000000){
+      var mio = n / 1000000;
+      var decimals = mio < 10 ? 3 : (mio < 100 ? 2 : 1);
+      return mio.toLocaleString("de-DE", { minimumFractionDigits: decimals, maximumFractionDigits: decimals }) + " Mio. €";
+    }
+    return Math.round(n).toLocaleString("de-DE") + " €";
+  }
+  function fmtRestzeit(diffMs){
+    diffMs = Math.max(0, diffMs);
+    var d = Math.floor(diffMs / 86400000);
+    var h = Math.floor((diffMs % 86400000) / 3600000);
+    var m = Math.floor((diffMs % 3600000) / 60000);
+    var s = Math.floor((diffMs % 60000) / 1000);
+    if(d > 0) return d + " Tag" + (d === 1 ? "" : "e") + " " + h + " Std.";
+    if(h > 0) return h + " Std. " + m + " Min.";
+    if(m > 0) return m + " Min. " + s + " Sek.";
+    return s + " Sek.";
+  }
+  function fmtRestDate(ms){
+    var d = new Date(ms);
+    var day = d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" });
+    var time = d.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
+    return "bis " + day + ", " + time + " Uhr";
+  }
   function dtLocalToMs(str){
     if(!str) return null;
     var t = new Date(str).getTime();
@@ -590,11 +665,18 @@
     clearTimeout(showToast._t);
     showToast._t = setTimeout(function(){ els.toast.classList.remove("show"); }, 2400);
   }
-
   function showBanner(el, msg){
     if(!msg){ el.hidden = true; el.textContent = ""; return; }
     el.hidden = false; el.textContent = msg;
   }
+
+  function wirePeriodToggle(selectEl, fieldEl){
+    selectEl.addEventListener("change", function(){
+      fieldEl.hidden = selectEl.value !== "custom";
+    });
+  }
+  wirePeriodToggle(els.fPeriod, els.fPeriodLabelField);
+  wirePeriodToggle(els.ePeriod, els.ePeriodLabelField);
 
   // ---------------- Storage (Firebase Realtime Database, REST) ----------------
   function genId(){
@@ -635,7 +717,9 @@
       els.setupSubmit.textContent = "Wird erstellt…";
 
       var state = {
-        title: (els.fTitle.value || "Vertriebsziel").trim(),
+        team: (els.fTeam.value || "").trim(),
+        period: els.fPeriod.value,
+        periodLabel: (els.fPeriodLabel.value || "").trim(),
         goal: goal,
         current: current,
         deadline: dtLocalToMs(els.fDeadline.value),
@@ -659,36 +743,34 @@
 
   // ---------------- Board view ----------------
   var currentState = null;
-  var displayedAmount = 0;
+  var displayedAmount = null;
   var goalHitCelebrated = false;
-  var pollTimer = null;
   var animFrame = null;
 
   var TAGLINES = [
-    { max: 1,   text: "Bereit zum Start – der erste Euro zählt." },
-    { max: 25,  text: "Der Start ist gemacht – jetzt Gas geben!" },
-    { max: 50,  text: "Ein Viertel geschafft – weiter so!" },
-    { max: 75,  text: "Über die Hälfte – der Endspurt beginnt!" },
-    { max: 90,  text: "Fast da – niemand bremst jetzt!" },
-    { max: 100, text: "Zielgerade! Jeder Euro zählt!" }
+    { max: 1,   headline: "Bereit zum Start.",        sub: "Der erste Euro zählt." },
+    { max: 25,  headline: "Der Start ist gemacht.",    sub: "Jetzt Gas geben!" },
+    { max: 50,  headline: "Ein Viertel geschafft.",    sub: "Weiter so!" },
+    { max: 75,  headline: "Über die Hälfte.",          sub: "Der Endspurt beginnt!" },
+    { max: 90,  headline: "Fast da.",                  sub: "Niemand bremst jetzt!" },
+    { max: 100, headline: "Zielgerade!",               sub: "Jeder Abschluss zählt." }
   ];
   function taglineFor(pct){
-    if(pct >= 100) return "🎉 ZIEL ERREICHT! Ihr seid Champions!";
-    for(var i=0;i<TAGLINES.length;i++){ if(pct < TAGLINES[i].max) return TAGLINES[i].text; }
-    return TAGLINES[TAGLINES.length-1].text;
+    if(pct >= 100) return { headline: "Ziel erreicht!", sub: "Gemeinsam geschafft – stark, Team!" };
+    for(var i=0;i<TAGLINES.length;i++){ if(pct < TAGLINES[i].max) return TAGLINES[i]; }
+    return TAGLINES[TAGLINES.length-1];
   }
 
-  function animateAmount(from, to){
+  function animateHero(from, to, goalHit, suffixLabel){
     cancelAnimationFrame(animFrame);
     var start = performance.now();
-    var dur = 1100;
+    var dur = 1000;
     function ease(t){ return 1 - Math.pow(1-t, 3); }
     function step(now){
       var t = Math.min(1, (now - start) / dur);
       var val = from + (to - from) * ease(t);
-      els.amount.innerHTML = Math.round(val).toLocaleString("de-DE") + '<span class="unit">€</span>';
+      els.heroAmount.textContent = (goalHit ? "+ " : "") + fmtSmartEuro(val);
       if(t < 1){ animFrame = requestAnimationFrame(step); }
-      else { displayedAmount = to; }
     }
     animFrame = requestAnimationFrame(step);
   }
@@ -697,26 +779,48 @@
     var pct = state.goal > 0 ? (state.current / state.goal) * 100 : 0;
     var pctClamped = Math.max(0, Math.min(100, pct));
     var goalHit = pct >= 100;
+    var info = periodInfo(state);
 
-    els.boardTitle.textContent = state.title || "Vertriebsziel";
-    els.goalValue.textContent = fmtEuro(state.goal);
-    els.pctValue.textContent = Math.round(pct) + " %";
-    els.pctValue.classList.toggle("goal-hit", goalHit);
+    els.boardEyebrow.hidden = !state.team;
+    els.boardEyebrow.textContent = state.team || "";
+    els.boardTitle.textContent = info.header;
 
     var remaining = Math.max(0, state.goal - state.current);
-    els.deltaValue.textContent = goalHit
-      ? "+ " + fmtEuro(state.current - state.goal) + " über dem Ziel"
-      : "noch " + fmtEuro(remaining);
+    var heroValue = goalHit ? (state.current - state.goal) : remaining;
+    els.heroKicker.textContent = goalHit ? "Überschuss" : "Noch";
+    els.heroSuffix.textContent = (goalHit ? "über dem " : "bis zum ") + info.genitive;
+    els.heroAmount.classList.toggle("goal-hit", goalHit);
 
-    els.progressFill.style.width = pctClamped + "%";
-    els.progressFill.classList.toggle("goal-hit", goalHit);
-
-    els.tagline.textContent = taglineFor(pct);
-    els.tagline.classList.toggle("goal-hit", goalHit);
-
-    if(displayedAmount !== state.current){
-      animateAmount(displayedAmount, state.current);
+    if(displayedAmount === null){
+      els.heroAmount.textContent = (goalHit ? "+ " : "") + fmtSmartEuro(heroValue);
+      displayedAmount = heroValue;
+    } else if(displayedAmount !== heroValue){
+      animateHero(displayedAmount, heroValue, goalHit);
+      displayedAmount = heroValue;
     }
+
+    if(state.deadline){
+      els.restzeitCard.hidden = false;
+      els.restzeitDate.textContent = fmtRestDate(state.deadline);
+    } else {
+      els.restzeitCard.hidden = true;
+    }
+
+    els.ringPct.textContent = Math.round(pct);
+    els.progressPctText.textContent = Math.round(pct) + " %";
+    var offset = RING_C * (1 - pctClamped / 100);
+    els.ringFill.style.strokeDashoffset = offset.toFixed(2);
+    els.ringFill.classList.toggle("goal-hit", goalHit);
+    els.barFill.style.width = pctClamped + "%";
+    els.barFill.classList.toggle("goal-hit", goalHit);
+
+    els.statCurrent.textContent = fmtEuro(state.current);
+    els.statGoal.textContent = fmtSmartEuro(state.goal);
+
+    var tag = taglineFor(pct);
+    els.taglineHeadline.textContent = tag.headline;
+    els.taglineSub.textContent = tag.sub;
+    els.taglineBanner.classList.toggle("goal-hit", goalHit);
 
     if(goalHit && !goalHitCelebrated){
       goalHitCelebrated = true;
@@ -728,29 +832,6 @@
     updateUpdatedText(state.updatedAt);
     tickCountdown();
   }
-
-  function tickCountdown(){
-    if(!currentState || !currentState.deadline){
-      els.countdownWrap.hidden = true;
-      return;
-    }
-    els.countdownWrap.hidden = false;
-    var diff = currentState.deadline - Date.now();
-    var expired = diff <= 0;
-    diff = Math.max(0, diff);
-    var pad = function(n){ return String(n).padStart(2, "0"); };
-    var days = Math.floor(diff / 86400000);
-    var hours = Math.floor((diff % 86400000) / 3600000);
-    var mins = Math.floor((diff % 3600000) / 60000);
-    var secs = Math.floor((diff % 60000) / 1000);
-    els.cdDays.textContent = String(days);
-    els.cdHours.textContent = pad(hours);
-    els.cdMin.textContent = pad(mins);
-    els.cdSec.textContent = pad(secs);
-    els.countdownLabel.textContent = expired ? "Frist abgelaufen" : "Noch bis zum Stichtag";
-    els.countdownWrap.classList.toggle("expired", expired);
-  }
-  setInterval(tickCountdown, 1000);
 
   var lastUpdatedAt = null;
   function updateUpdatedText(ts){
@@ -767,6 +848,15 @@
     els.updatedText.textContent = txt;
   }
   setInterval(tickUpdatedText, 1000);
+
+  function tickCountdown(){
+    if(!currentState || !currentState.deadline || els.restzeitCard.hidden){ return; }
+    var diff = currentState.deadline - Date.now();
+    var expired = diff <= 0;
+    els.restzeitValue.textContent = fmtRestzeit(diff);
+    els.restzeitCard.classList.toggle("expired", expired);
+  }
+  setInterval(tickCountdown, 1000);
 
   function fetchState(silent){
     return fbGet(boardId)
@@ -792,7 +882,7 @@
     els.shareLink.value = location.href;
 
     fetchState(false);
-    pollTimer = setInterval(function(){ fetchState(true); }, POLL_MS);
+    setInterval(function(){ fetchState(true); }, POLL_MS);
 
     document.addEventListener("visibilitychange", function(){
       if(document.visibilityState === "visible"){ fetchState(true); }
@@ -811,7 +901,10 @@
 
   function openSheet(){
     if(!currentState) return;
-    els.eTitle.value = currentState.title || "";
+    els.eTeam.value = currentState.team || "";
+    els.ePeriod.value = currentState.period || "month";
+    els.ePeriodLabelField.hidden = els.ePeriod.value !== "custom";
+    els.ePeriodLabel.value = currentState.periodLabel || "";
     els.eCurrent.value = currentState.current;
     els.eGoal.value = currentState.goal;
     els.eDeadline.value = msToDtLocal(currentState.deadline);
@@ -830,7 +923,9 @@
       return;
     }
     var state = {
-      title: (els.eTitle.value || "Vertriebsziel").trim(),
+      team: (els.eTeam.value || "").trim(),
+      period: els.ePeriod.value,
+      periodLabel: (els.ePeriodLabel.value || "").trim(),
       goal: goal,
       current: current,
       deadline: dtLocalToMs(els.eDeadline.value),
@@ -885,7 +980,7 @@
     resize();
     window.addEventListener("resize", resize);
 
-    var colors = ["#FF5A3C", "#FFC24B", "#34D399", "#F5F7FC", "#FF8A5C"];
+    var colors = ["#159A5B", "#D99A1C", "#0D7F4B", "#12181A", "#3F8CD9"];
     var pieces = [];
     var count = 160;
     for(var i=0;i<count;i++){
@@ -898,8 +993,7 @@
         vRot: (Math.random() - 0.5) * 0.2,
         vy: 2 + Math.random() * 3,
         vx: (Math.random() - 0.5) * 2,
-        color: colors[i % colors.length],
-        life: 0
+        color: colors[i % colors.length]
       });
     }
     var start = performance.now();
