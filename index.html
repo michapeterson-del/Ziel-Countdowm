@@ -206,6 +206,46 @@
   }
   .goal-line b{color:var(--ink); font-weight:700;}
 
+  .countdown-wrap{width:100%;}
+  .countdown-label{
+    text-transform:uppercase;
+    letter-spacing:.16em;
+    font-size:.72rem;
+    font-weight:700;
+    color:var(--ink-dim);
+    margin:0 0 .7rem;
+    transition:color .2s ease;
+  }
+  .countdown-wrap.expired .countdown-label{color:var(--danger);}
+  .countdown-grid{
+    display:flex; justify-content:center; gap:.7rem;
+  }
+  .countdown-cell{
+    background:var(--bg-panel);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:.65rem .5rem;
+    min-width:4.4rem;
+    transition:border-color .2s ease;
+  }
+  .countdown-wrap.expired .countdown-cell{border-color:rgba(255,107,107,.4);}
+  .countdown-num{
+    font-family:'Space Mono',monospace;
+    font-weight:700;
+    font-size:clamp(1.3rem, 3.6vw, 1.8rem);
+    color:var(--ink);
+    font-variant-numeric:tabular-nums;
+    transition:color .2s ease;
+  }
+  .countdown-wrap.expired .countdown-num{color:var(--danger);}
+  .countdown-unit{
+    font-size:.62rem;
+    text-transform:uppercase;
+    letter-spacing:.1em;
+    color:var(--ink-faint);
+    margin-top:.15rem;
+  }
+
   .progress-wrap{width:100%; max-width:680px;}
   .progress-track{
     position:relative;
@@ -381,6 +421,11 @@
         <label for="f-current">Aktueller Stand</label>
         <div class="euro-input"><input id="f-current" type="number" min="0" step="1" placeholder="0" value="0" required></div>
       </div>
+      <div class="field">
+        <label for="f-deadline">Enddatum (optional)</label>
+        <input id="f-deadline" type="datetime-local">
+        <p class="hint">Zeigt einen Live-Countdown bis zu diesem Zeitpunkt.</p>
+      </div>
       <button type="submit" id="setup-submit" class="btn btn-primary">Board erstellen &amp; Link holen</button>
     </form>
   </div>
@@ -393,6 +438,16 @@
     <h1 id="board-title" class="board-title">Vertriebsziel</h1>
 
     <div id="board-error" class="banner banner-error" hidden></div>
+
+    <div id="countdown-wrap" class="countdown-wrap" hidden>
+      <p id="countdown-label" class="countdown-label">Noch bis zum Stichtag</p>
+      <div class="countdown-grid">
+        <div class="countdown-cell"><div id="cd-days" class="countdown-num mono">00</div><div class="countdown-unit">Tage</div></div>
+        <div class="countdown-cell"><div id="cd-hours" class="countdown-num mono">00</div><div class="countdown-unit">Std</div></div>
+        <div class="countdown-cell"><div id="cd-min" class="countdown-num mono">00</div><div class="countdown-unit">Min</div></div>
+        <div class="countdown-cell"><div id="cd-sec" class="countdown-num mono">00</div><div class="countdown-unit">Sek</div></div>
+      </div>
+    </div>
 
     <div class="amount-wrap">
       <div id="amount" class="amount mono">0<span class="unit">€</span></div>
@@ -445,6 +500,11 @@
       <label for="e-goal">Zielbetrag</label>
       <div class="euro-input"><input id="e-goal" type="number" min="1" step="1"></div>
     </div>
+    <div class="field">
+      <label for="e-deadline">Enddatum</label>
+      <input id="e-deadline" type="datetime-local">
+      <p class="hint">Leer lassen, um den Zeit-Countdown auszublenden.</p>
+    </div>
 
     <div class="sheet-actions">
       <button id="sheet-cancel" class="btn btn-ghost">Abbrechen</button>
@@ -473,10 +533,17 @@
     fTitle: document.getElementById("f-title"),
     fGoal: document.getElementById("f-goal"),
     fCurrent: document.getElementById("f-current"),
+    fDeadline: document.getElementById("f-deadline"),
 
     boardView: document.getElementById("board-view"),
     boardError: document.getElementById("board-error"),
     boardTitle: document.getElementById("board-title"),
+    countdownWrap: document.getElementById("countdown-wrap"),
+    countdownLabel: document.getElementById("countdown-label"),
+    cdDays: document.getElementById("cd-days"),
+    cdHours: document.getElementById("cd-hours"),
+    cdMin: document.getElementById("cd-min"),
+    cdSec: document.getElementById("cd-sec"),
     amount: document.getElementById("amount"),
     goalValue: document.getElementById("goal-value"),
     progressFill: document.getElementById("progress-fill"),
@@ -493,6 +560,7 @@
     eTitle: document.getElementById("e-title"),
     eCurrent: document.getElementById("e-current"),
     eGoal: document.getElementById("e-goal"),
+    eDeadline: document.getElementById("e-deadline"),
     sheetCancel: document.getElementById("sheet-cancel"),
     sheetSave: document.getElementById("sheet-save"),
 
@@ -502,6 +570,18 @@
   function fmtEuro(n){
     n = Math.round(Number(n) || 0);
     return n.toLocaleString("de-DE") + " €";
+  }
+
+  function dtLocalToMs(str){
+    if(!str) return null;
+    var t = new Date(str).getTime();
+    return isNaN(t) ? null : t;
+  }
+  function msToDtLocal(ms){
+    if(!ms) return "";
+    var d = new Date(ms);
+    var pad = function(n){ return String(n).padStart(2, "0"); };
+    return d.getFullYear() + "-" + pad(d.getMonth()+1) + "-" + pad(d.getDate()) + "T" + pad(d.getHours()) + ":" + pad(d.getMinutes());
   }
 
   function showToast(msg){
@@ -558,6 +638,7 @@
         title: (els.fTitle.value || "Vertriebsziel").trim(),
         goal: goal,
         current: current,
+        deadline: dtLocalToMs(els.fDeadline.value),
         updatedAt: Date.now()
       };
 
@@ -645,7 +726,31 @@
     }
 
     updateUpdatedText(state.updatedAt);
+    tickCountdown();
   }
+
+  function tickCountdown(){
+    if(!currentState || !currentState.deadline){
+      els.countdownWrap.hidden = true;
+      return;
+    }
+    els.countdownWrap.hidden = false;
+    var diff = currentState.deadline - Date.now();
+    var expired = diff <= 0;
+    diff = Math.max(0, diff);
+    var pad = function(n){ return String(n).padStart(2, "0"); };
+    var days = Math.floor(diff / 86400000);
+    var hours = Math.floor((diff % 86400000) / 3600000);
+    var mins = Math.floor((diff % 3600000) / 60000);
+    var secs = Math.floor((diff % 60000) / 1000);
+    els.cdDays.textContent = String(days);
+    els.cdHours.textContent = pad(hours);
+    els.cdMin.textContent = pad(mins);
+    els.cdSec.textContent = pad(secs);
+    els.countdownLabel.textContent = expired ? "Frist abgelaufen" : "Noch bis zum Stichtag";
+    els.countdownWrap.classList.toggle("expired", expired);
+  }
+  setInterval(tickCountdown, 1000);
 
   var lastUpdatedAt = null;
   function updateUpdatedText(ts){
@@ -709,6 +814,7 @@
     els.eTitle.value = currentState.title || "";
     els.eCurrent.value = currentState.current;
     els.eGoal.value = currentState.goal;
+    els.eDeadline.value = msToDtLocal(currentState.deadline);
     showBanner(els.editError, null);
     els.sheetOverlay.hidden = false;
   }
@@ -727,6 +833,7 @@
       title: (els.eTitle.value || "Vertriebsziel").trim(),
       goal: goal,
       current: current,
+      deadline: dtLocalToMs(els.eDeadline.value),
       updatedAt: Date.now()
     };
     els.sheetSave.disabled = true;
