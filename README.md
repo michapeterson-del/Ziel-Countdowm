@@ -25,7 +25,7 @@ Der Stand wird in einer Firebase Realtime Database gespeichert (Projekt `test-3c
 }
 ```
 
-Damit kann jeder mit einem Link genau dieses eine Board lesen/bearbeiten, aber niemand kann die komplette Liste aller jemals erstellten Boards abrufen. Die Board-ID im Link ist der einzige Schlüssel dazu – Link also nur an die gewünschten Personen schicken.
+Damit kann jeder mit einem Link genau dieses eine Board lesen/bearbeiten, aber niemand kann die komplette Liste aller jemals erstellten Boards abrufen. Die Board-ID im Link (32 zufällige Zeichen) ist der einzige Schlüssel dazu – Link also nur an die gewünschten Personen schicken. Achtung: Wer den Link hat, kann die Zahlen auch ändern. Boards, die vor diesem Update erstellt wurden, haben noch eine kürzere, teils erratbare ID – am besten einmal neu anlegen.
 
 ## GitHub Pages aktivieren (einmalig)
 

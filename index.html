@@ -692,8 +692,12 @@
   wirePeriodToggle(els.ePeriod, els.ePeriodLabelField);
 
   // ---------------- Storage (Firebase Realtime Database, REST) ----------------
+  // Die Board-ID ist der einzige Schlüssel zum Board, daher 128 Bit echter Zufall
+  // (vorher Zeitstempel + Math.random, teilweise erratbar).
   function genId(){
-    return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+    var bytes = new Uint8Array(16);
+    crypto.getRandomValues(bytes);
+    return Array.prototype.map.call(bytes, function(b){ return ("0" + b.toString(16)).slice(-2); }).join("");
   }
   function fbGet(boardId){
     return fetch(FIREBASE_DB + "/boards/" + boardId + ".json?_=" + Date.now(), { cache: "no-store" })
