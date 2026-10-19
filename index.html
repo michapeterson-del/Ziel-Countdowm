@@ -401,12 +401,12 @@
       </div>
       <div class="field">
         <label for="f-goal">Zielbetrag</label>
-        <div class="euro-input"><input id="f-goal" type="number" min="1" step="1" placeholder="1100000" required></div>
-        <p class="hint">Einfach die Zahl eintippen, z. B. 1100000 für 1,1 Mio.</p>
+        <div class="euro-input"><input id="f-goal" type="text" inputmode="numeric" placeholder="1.100.000" required></div>
+        <p class="hint">Einfach die Zahl eintippen, z. B. 1.100.000 oder 1100000 für 1,1 Mio.</p>
       </div>
       <div class="field">
         <label for="f-current">Aktueller Stand</label>
-        <div class="euro-input"><input id="f-current" type="number" min="0" step="1" placeholder="0" value="0" required></div>
+        <div class="euro-input"><input id="f-current" type="text" inputmode="numeric" placeholder="0" value="0" required></div>
       </div>
       <div class="field">
         <label for="f-deadline">Enddatum (optional)</label>
@@ -524,11 +524,11 @@
     </div>
     <div class="field">
       <label for="e-current">Aktueller Stand</label>
-      <div class="euro-input"><input id="e-current" type="number" min="0" step="1"></div>
+      <div class="euro-input"><input id="e-current" type="text" inputmode="numeric"></div>
     </div>
     <div class="field">
       <label for="e-goal">Zielbetrag</label>
-      <div class="euro-input"><input id="e-goal" type="number" min="1" step="1"></div>
+      <div class="euro-input"><input id="e-goal" type="text" inputmode="numeric"></div>
     </div>
     <div class="field">
       <label for="e-deadline">Enddatum</label>
@@ -630,6 +630,13 @@
   els.ringFill.setAttribute("stroke-dasharray", RING_C.toFixed(2));
 
   // ---------------- formatting ----------------
+  function parseEuroInput(str){
+    str = String(str || "").trim();
+    if(!str) return NaN;
+    str = str.replace(/\./g, "").replace(",", ".").replace(/[^0-9.\-]/g, "");
+    return Number(str);
+  }
+
   function fmtEuro(n){
     n = Math.round(Number(n) || 0);
     return n.toLocaleString("de-DE") + " €";
@@ -723,8 +730,8 @@
       ev.preventDefault();
       showBanner(els.setupError, null);
 
-      var goal = Number(els.fGoal.value);
-      var current = Number(els.fCurrent.value || 0);
+      var goal = parseEuroInput(els.fGoal.value);
+      var current = parseEuroInput(els.fCurrent.value) || 0;
       if(!goal || goal <= 0){
         showBanner(els.setupError, "Bitte einen gültigen Zielbetrag eintragen.");
         return;
@@ -922,8 +929,8 @@
     els.ePeriod.value = currentState.period || "month";
     els.ePeriodLabelField.hidden = els.ePeriod.value !== "custom";
     els.ePeriodLabel.value = currentState.periodLabel || "";
-    els.eCurrent.value = currentState.current;
-    els.eGoal.value = currentState.goal;
+    els.eCurrent.value = Math.round(currentState.current).toLocaleString("de-DE");
+    els.eGoal.value = Math.round(currentState.goal).toLocaleString("de-DE");
     els.eDeadline.value = msToDtLocal(currentState.deadline);
     showBanner(els.editError, null);
     els.sheetOverlay.hidden = false;
@@ -933,8 +940,8 @@
   }
 
   function saveEdit(){
-    var goal = Number(els.eGoal.value);
-    var current = Number(els.eCurrent.value);
+    var goal = parseEuroInput(els.eGoal.value);
+    var current = parseEuroInput(els.eCurrent.value);
     if(!goal || goal <= 0 || current < 0 || isNaN(current)){
       showBanner(els.editError, "Bitte gültige Zahlen eintragen.");
       return;
